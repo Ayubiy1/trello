@@ -7,7 +7,7 @@ const App = () => {
     <>
       <Routes>
         <Route path="/" element={<HomePage />}>
-          <Route path=":key/:id" element={<ListsComp />} />
+          <Route path=":id" element={<ListsComp />} />
         </Route>
       </Routes>
     </>

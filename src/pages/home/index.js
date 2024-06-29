@@ -1,24 +1,13 @@
 import React, { useState } from "react";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Layout, Menu } from "antd";
-import { Outlet, useLocation, useNavigate } from "react-router";
-import { useQuery } from "react-query";
-import axios from "axios";
+import { Breadcrumb, Button, Layout } from "antd";
+import { Outlet } from "react-router";
+import BoardsComp from "../../components/boards";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const path = location.pathname;
-  const decodedPath = decodeURIComponent(path);
-  const boardName = decodedPath.split("/")[1];
-
   const [collapsed, setCollapsed] = useState(false);
-
-  const { data, isLoading } = useQuery("boards-data", () => {
-    return axios.get(`https://trello-api-ahgs.onrender.com/boards`);
-  });
 
   return (
     <Layout
@@ -26,7 +15,11 @@ const HomePage = () => {
         minHeight: "100vh",
       }}
     >
-      <Sider collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <Sider
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        style={{ backgroundColor: "#22272B" }}
+      >
         <div className="flex items-center gap-2 ms-3">
           <Button
             type="primary"
@@ -48,21 +41,14 @@ const HomePage = () => {
         </div>
 
         <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={[`${boardName}`]}
-          onClick={(e) => {
-            console.log(e);
-            // navigate(`${e?.key}/`);
-          }}
-          items={data?.data}
-        />
+        <BoardsComp />
       </Sider>
 
       <Layout className="bg-gray-700">
         <Header
           style={{
             padding: 0,
+            background: "#22272B",
           }}
         />
 
