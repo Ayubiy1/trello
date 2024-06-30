@@ -3,11 +3,14 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Layout } from "antd";
 import { Outlet } from "react-router";
 import BoardsComp from "../../components/boards";
+import { useLocalStorageState } from "ahooks";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const HomePage = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useLocalStorageState("collapsed", {
+    defaultValue: false,
+  });
 
   return (
     <Layout

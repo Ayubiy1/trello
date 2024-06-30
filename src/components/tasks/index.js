@@ -1,7 +1,12 @@
 import axios from "axios";
 import { useQuery } from "react-query";
+import { useDispatch } from "react-redux";
+import { setChooseTaskId } from "../../store/todoSlice";
+import EditModalTask from "../modals/edit-task";
 
 const TasksComp = ({ listId }) => {
+  const dispatch = useDispatch();
+
   const { data } = useQuery("tasks", () => {
     return axios.get(`https://trello-api-ahgs.onrender.com/tasks`);
   });
@@ -15,10 +20,15 @@ const TasksComp = ({ listId }) => {
             return (
               <div
                 key={task?.id}
-                className="bg-[#22272B] text-gray-300 my-1 p-2"
+                className="bg-[#1D2125] text-gray-300 my-1 p-2 cursor-pointer flex items-center justify-between"
+                onClick={() => {
+                  console.log(task?.id);
+                  dispatch(setChooseTaskId(task?.id));
+                }}
               >
-                {/* #1D2125 */}
-                {task?.label}
+                <p className="m-0">{task?.label}</p>
+
+                <EditModalTask taskId={task?.id} />
               </div>
             );
           })}
