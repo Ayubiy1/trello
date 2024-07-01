@@ -1,0 +1,10 @@
+.ant-modal-content {
+  color: white !important;
+  background-color: #1d2125 !important;
+}
+
+.ant-modal-title,
+.ant-modal-close-x {
+  color: white !important;
+  background-color: #1d2125 !important;
+}

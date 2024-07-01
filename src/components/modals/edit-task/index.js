@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Modal } from "antd";
-import { RxDotsVertical } from "react-icons/rx";
 import { useSelector } from "react-redux";
 
-const EditModalTask = ({ taskId }) => {
+import "./style.css";
+
+const EditModalTask = ({ taskId, open, setOpen }) => {
   const chooseTaskId = useSelector((state) => state.todo?.chooseTaskId);
 
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, [loading]);
+
   const showLoading = () => {
     setOpen(true);
     setLoading(true);
@@ -18,13 +26,6 @@ const EditModalTask = ({ taskId }) => {
   };
   return (
     <>
-      <span
-        className="text-[18px] text-gray-300 font-bold py-1 cursor-pointer"
-        onClick={showLoading}
-      >
-        <RxDotsVertical />
-      </span>
-
       <Modal
         centered
         title={<p>Loading Modal</p>}

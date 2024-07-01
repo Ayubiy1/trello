@@ -12,7 +12,7 @@ const BoardsComp = () => {
   const boardName = decodedPath.split("/")[1];
 
   const { data, isLoading } = useQuery("boards-data", () => {
-    return axios.get(`https://trello-api-ahgs.onrender.com/boards`);
+    return axios.get(`http://localhost:3004/boards`);
   });
 
   return (

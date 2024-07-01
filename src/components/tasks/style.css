@@ -1,0 +1,9 @@
+.ant-dropdown-menu {
+  background-color: #101204 !important;
+}
+
+.ant-dropdown-menu-item {
+  margin: 3px 0 !important;
+  color: white !important;
+  background-color: #1d2125 !important;
+}
