@@ -1,4 +1,16 @@
+.edit-list-item {
+  border: 1px solid;
+  border-radius: 3px;
+}
+.edit-list-item .icon {
+  color: red;
+  height: 20px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .list-name {
+  border: none;
   color: white;
   padding: 4px 0;
   padding-left: 6px;
