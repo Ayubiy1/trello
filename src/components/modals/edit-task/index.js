@@ -1,14 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal } from "antd";
 import { useSelector } from "react-redux";
 
 import "./style.css";
+import axios from "axios";
+import { useQuery } from "react-query";
 
 const EditModalTask = ({ taskId, open, setOpen }) => {
   const chooseTaskId = useSelector((state) => state.todo?.chooseTaskId);
-
-  // const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const [editTaskItem, setEditTaskItem] = useState(null);
+
+  const { data } = useQuery([chooseTaskId, "task-edit-modal"], () => {
+    return axios.get(`http://localhost:3004/tasks/?id=${chooseTaskId}`);
+  });
+
+  useEffect(() => {
+    data?.data.map((item) => {
+      setEditTaskItem(item);
+    });
+  }, [data?.data]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -28,7 +39,7 @@ const EditModalTask = ({ taskId, open, setOpen }) => {
     <>
       <Modal
         centered
-        title={<p>Loading Modal</p>}
+        title={<p className="m-0">{editTaskItem?.label}</p>}
         footer={
           <Button type="primary" onClick={showLoading}>
             Reload
@@ -37,11 +48,7 @@ const EditModalTask = ({ taskId, open, setOpen }) => {
         loading={loading}
         open={open}
         onCancel={() => setOpen(false)}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
+      ></Modal>
     </>
   );
 };

@@ -6,7 +6,7 @@ import { setChooseTaskId } from "../../store/todoSlice";
 import EditModalTask from "../modals/edit-task";
 import { useState } from "react";
 import { RxDotsVertical } from "react-icons/rx";
-import { Dropdown, Menu } from "antd";
+import { Dropdown } from "antd";
 
 import "./style.css";
 
@@ -15,7 +15,7 @@ const TasksComp = ({ listId }) => {
   const queryClient = useQueryClient();
 
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [selectTaskId, setSelectTaskId] = useState(false);
 
   const { data } = useQuery("tasks", () => {
@@ -42,7 +42,6 @@ const TasksComp = ({ listId }) => {
       label: <span>Delete</span>,
       with: 300,
       onClick: () => {
-        console.log("adsa");
         mutate();
       },
       key: "1",
@@ -67,7 +66,6 @@ const TasksComp = ({ listId }) => {
                 <p
                   className="m-0 w-[100%]"
                   onClick={() => {
-                    console.log(task?.id);
                     setOpen(true);
                     dispatch(setChooseTaskId(task?.id));
                   }}

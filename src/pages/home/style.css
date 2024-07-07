@@ -1,0 +1,14 @@
+.favourite-board {
+  transition: 0.5s;
+}
+
+.favourite-board:hover {
+  filter: brightness(0.7);
+  transition: 0.5s;
+}
+.starr{
+  display: none;
+}
+.favourite-board:hover .starr {
+  display: block;
+}

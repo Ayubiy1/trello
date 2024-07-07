@@ -1,26 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Layout } from "antd";
-import { Outlet, useNavigate, useParams } from "react-router";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router";
 import BoardsComp from "../../components/boards";
 import { useLocalStorageState } from "ahooks";
-import { useQuery } from "react-query";
+import NavBoardTitle from "../../components/nav-board-title";
 import axios from "axios";
-import { FaRegStar, FaRegUserCircle, FaStar } from "react-icons/fa";
-import { RiMenu5Line } from "react-icons/ri";
+import { useQuery } from "react-query";
 
-const { Header, Content, Footer, Sider } = Layout;
+import "./style.css";
+import { FaRegStar, FaStar } from "react-icons/fa";
+import { setChooseBoard } from "../../store/todoSlice";
+import { useDispatch } from "react-redux";
+const { Content, Footer, Sider } = Layout;
 
 const HomePage = () => {
-  const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const params = useParams();
+
+  const [chooseBoardBg, setChooseBoardBg] = useLocalStorageState(
+    "chooseBoardBg",
+    {
+      defaultValue: null,
+    }
+  );
 
   const [collapsed, setCollapsed] = useLocalStorageState("collapsed", {
     defaultValue: false,
   });
-  const { data } = useQuery([params?.id, "board-data"], () => {
-    return axios.get(`http://localhost:3004/boards?id=${+params?.id}`);
+
+  const { data, isLoading } = useQuery("boards-data-favouriteTrue", () => {
+    return axios.get(`http://localhost:3004/boards?favourite=true`);
   });
+
+  const { data: dataa } = useQuery([params?.id, "board-data-bg"], () => {
+    return axios.get(`http://localhost:3004/boards?id=${params?.id}`);
+  });
+
+  useEffect(() => {
+    dataa?.data?.map((i) => {
+      setChooseBoardBg({ backgroungImg: i?.backgroungImg, id: i?.id });
+    });
+  }, [params?.id]);
 
   return (
     <Layout
@@ -49,6 +72,7 @@ const HomePage = () => {
               className="flex items-center gap-2 ms-3 cursor-pointer"
               onClick={() => {
                 navigate("/");
+                dispatch(setChooseBoard(null));
               }}
             >
               <img
@@ -64,52 +88,21 @@ const HomePage = () => {
         <BoardsComp />
       </Sider>
 
-      <Layout className="bg-gray-700">
-        <Header
-          style={{
-            padding: 0,
-            background: "#22272B",
-          }}
-          className="flex items-center gap-3"
-        >
-          <div className="w-[100%]">
-            {data?.data.map((item) => {
-              return (
-                <div
-                  key={item?.id}
-                  className="text-white flex items-center justify-between w-[100%]"
-                >
-                  <div className="flex gap-2 items-center">
-                    <h2>{item?.label}</h2>
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => {
-                        if (item?.favourite == null) {
-                          console.log("null");
-                        } else {
-                          console.log("unnull");
-                        }
-                      }}
-                    >
-                      {item?.favourite == null ? <FaRegStar /> : <FaStar />}
-                    </span>
-                  </div>
-
-                  <div className="mr-2 flex gap-2 items-center">
-                    <span className="mr-2 flex gp-2 items-center text-[17px] cursor-pointer">
-                      <RiMenu5Line />
-                      <p className="m-0">Filter</p>
-                    </span>
-
-                    <span className="h[30px] text-[20px] cursor-pointer">
-                      <FaRegUserCircle />
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Header>
+      <Layout
+        className="bg-gray700"
+        style={{
+          backgroundImage:
+            chooseBoardBg && +params?.id == chooseBoardBg?.id
+              ? `url(${chooseBoardBg?.backgroungImg})`
+              : "none",
+          backgroundColor: "rgb(55 65 81)",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        //  style={{ chooseBoardBg != null ?backgroundImage:`url(${chooseBoardBg})`:background: "rgb(55 65 81 )" } }
+      >
+        <NavBoardTitle />
 
         <Content
           style={{
@@ -126,17 +119,78 @@ const HomePage = () => {
           </Breadcrumb>
 
           <div>
+            {location?.pathname == "/" && (
+              <div>
+                <span className="text-[20px] font-bold text-white">
+                  <FaRegStar /> Starred boards
+                </span>
+
+                <div className="flex items-center gap-2">
+                  {data?.data?.map((item) => {
+                    return (
+                      <div
+                        key={item?.id}
+                        style={{
+                          width: "212px",
+                          color: "white",
+                          padding: "5px",
+                          height: "101px",
+                          cursor: "pointer",
+                          overflow: "hidden",
+                          borderRadius: "8px",
+                          position: "relative",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundImage: `url(${item?.backgroungImg})`,
+                        }}
+                        className="favourite-board mt-2"
+                        onClick={() => {
+                          navigate(`${item?.id}`);
+                        }}
+                      >
+                        <span
+                          style={{
+                            color: "white",
+                            fontSize: "19px",
+                            fontWeight: "bold",
+                            textShadow: "0 0 5px black",
+                            transform: "translate(-50%, -50%)",
+                          }}
+                        >
+                          {item?.label}
+                        </span>
+
+                        <span
+                          style={{
+                            right: 15,
+                            bottom: 10,
+                            color: "yellow",
+                            position: "absolute",
+                          }}
+                          className="starr"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <FaStar />
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <Outlet />
           </div>
         </Content>
-        <Footer
+        {/* <Footer
           style={{
             textAlign: "center",
           }}
           className="bg-gray-700"
         >
           Ant Design ©{new Date().getFullYear()} Created by Ant UED
-        </Footer>
+        </Footer> */}
       </Layout>
     </Layout>
   );
